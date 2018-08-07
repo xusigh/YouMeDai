@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -22,8 +23,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private ImageView toolbarExit, imgBack, imgNext;
     private TextView toolbarTitle;
-    private static boolean canBack = false;
-    private static boolean canForward = false;
+    private static final String LOGIN_TITLE = "你我贷";
+    private static final String RENZHEN_TITLE = "你我贷借款-实名认证";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * 初始化webview,注入JS脚本
      */
     private void initWebView() {
-        WebSettings webSettings = webView.getSettings();
+        final WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setBlockNetworkImage(false);
@@ -72,27 +73,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
-                        + "document.getElementsByTagName('html')[0].innerHTML);");
-                view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
-                        + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
-                        + ");");
-                // 注入Javascript实现监听点击事件获取电话号码的功能
-                view.loadUrl("javascript:\t$(document).ready(function () {\n" +
-                        "\t\t$(\"#dtmbtn\").click(function () {\n" +
-                        "\t\t\tvar phone = $(\"#mobile\").val();\n" +
-                        "\t\t\tif (phone.length > 0) {\n" +
-                        "\t\t\t\twindow.ANDROID_CLIENT.showLoginPhone(phone);\n" +
-                        "\t\t\t} else {\n" +
-                        "\t\t\t}\n" +
-                        "\t\t});\n" +
-                        "\t});");
+                if (webView.getTitle().equals(LOGIN_TITLE)) {
+                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
+                            + "document.getElementsByTagName('html')[0].innerHTML);");
+                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
+                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
+                            + ");");
+                    // 注入Javascript实现监听点击事件获取电话号码的功能
+                    view.loadUrl("javascript:\t$(document).ready(function () {\n" +
+                            "\t\t$(\"#dtmbtn\").click(function () {\n" +
+                            "\t\t\tvar phone = $(\"#mobile\").val();\n" +
+                            "\t\t\tif (phone.length > 0) {\n" +
+                            "\t\t\t\twindow.ANDROID_CLIENT.showLoginPhone(phone);\n" +
+                            "\t\t\t} else {\n" +
+                            "\t\t\t}\n" +
+                            "\t\t});\n" +
+                            "\t});");
+                }
+                if(webView.getTitle().equals(RENZHEN_TITLE)){
+                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
+                            + "document.getElementsByTagName('html')[0].innerHTML);");
+                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
+                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
+                            + ");");
+                }
                 super.onPageFinished(view, url);
                 String title = view.getTitle();
                 if (!TextUtils.isEmpty(title)) {
                     toolbarTitle.setText(title);
                 }
                 checkBackStack();
+                Log.i("test", webView.getUrl());
             }
         });
     }
@@ -138,7 +149,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void showDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("提示")
-                .setMessage("确认退出你我贷，您的信息将不会被保存！")
+                .setMessage("确认退出“你我贷”，您的信息将不会被保存！")
                 .setPositiveButton("退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -154,6 +165,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return true;
+        }
+
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {

@@ -3,31 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        app:contentInsetStart="0dp"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="45dp"
+        android:background="@color/colorPrimary">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary">
 
             <ImageView
                 android:id="@+id/toolbar_exit"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:padding="14dp"
                 android:layout_gravity="center_vertical"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="14dp"
                 android:src="@drawable/img_exit" />
 
             <TextView
                 android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
+                android:gravity="center"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:maxLines="1"
@@ -73,9 +78,9 @@
                 android:id="@+id/img_back"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:padding="10dp"
                 android:layout_gravity="center"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
                 android:src="@drawable/img_back_false" />
         </FrameLayout>
 
@@ -89,9 +94,9 @@
                 android:id="@+id/img_next"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:padding="10dp"
                 android:layout_gravity="center"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="10dp"
                 android:src="@drawable/img_next_false" />
         </FrameLayout>
     </LinearLayout>
