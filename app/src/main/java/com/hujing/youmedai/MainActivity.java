@@ -111,7 +111,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     toolbarTitle.setText(title);
                 }
                 checkBackStack();
-                Log.i("test", webView.getUrl());
             }
         });
     }
