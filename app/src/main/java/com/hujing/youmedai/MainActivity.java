@@ -1,7 +1,6 @@
 package com.hujing.youmedai;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -74,11 +73,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onPageFinished(WebView view, String url) {
                 if (webView.getTitle().equals(LOGIN_TITLE)) {
-                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
-                            + "document.getElementsByTagName('html')[0].innerHTML);");
-                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
-                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
-                            + ");");
+//                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
+//                            + "document.getElementsByTagName('html')[0].innerHTML);");
+//                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
+//                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
+//                            + ");");
                     // 注入Javascript实现监听点击事件获取电话号码的功能
                     view.loadUrl("javascript:\t$(document).ready(function () {\n" +
                             "\t\t$(\"#dtmbtn\").click(function () {\n" +
@@ -90,12 +89,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             "\t\t});\n" +
                             "\t});");
                 }
-                if(webView.getTitle().equals(RENZHEN_TITLE)){
-                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
-                            + "document.getElementsByTagName('html')[0].innerHTML);");
-                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
-                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
-                            + ");");
+                if (webView.getTitle().equals(RENZHEN_TITLE)) {
+//                    view.loadUrl("javascript:window.ANDROID_CLIENT.showSource("
+//                            + "document.getElementsByTagName('html')[0].innerHTML);");
+//                    view.loadUrl("javascript:window.ANDROID_CLIENT.showDescription("
+//                            + "document.querySelector('meta[name=\"share-description\"]').getAttribute('content')"
+//                            + ");");
+                    view.loadUrl("javascript:$(document).ready(function () {\n" +
+                            "\t\t$(\"#btnSubmit\").click(function () {\n" +
+                            "\t\t\tvar realName = $(\"#realName\").val();\n" +
+                            "\t\t\tvar idCard = $(\"#idCard\").val();\n" +
+                            "\t\t\tif (realName.length > 0 && idCard.length > 0) {\n" +
+                            "\t\t\t\twindow.ANDROID_CLIENT.showNameAndIdCard(realName, idCard);\n" +
+                            "\t\t\t}\n" +
+                            "\t\t});\n" +
+                            "\t});");
                 }
                 super.onPageFinished(view, url);
                 String title = view.getTitle();
