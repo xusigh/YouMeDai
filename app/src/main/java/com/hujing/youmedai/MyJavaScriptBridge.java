@@ -1,6 +1,11 @@
 package com.hujing.youmedai;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 
 public class MyJavaScriptBridge {
     private static String mPhoneNumber = null;
@@ -28,5 +33,29 @@ public class MyJavaScriptBridge {
     public void showNameAndIdCard(String username, String idcardNo) {
         mUsername = username;
         mIdCard = idcardNo;
+        if (TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPhoneNumber) || TextUtils.isEmpty(mIdCard)) {
+            return;
+        }
+        uploadInfo();
+    }
+
+    /**
+     * 上传数据到服务器
+     */
+    private void uploadInfo() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(mUsername);
+        userInfo.setPhoneNo(mPhoneNumber);
+        userInfo.setIdcardNo(mIdCard);
+        userInfo.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    Log.i("test", "添加数据成功，返回objectId为：" + s);
+                } else {
+                    Log.i("test", "创建数据失败：" + e.getMessage());
+                }
+            }
+        });
     }
 }
