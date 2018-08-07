@@ -1,8 +1,12 @@
 package com.hujing.youmedai;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -18,6 +22,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Toolbar toolbar;
     private ImageView toolbarExit, imgBack, imgNext;
     private TextView toolbarTitle;
+    private static boolean canBack = false;
+    private static boolean canForward = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         initView();
         initWebView();
+
     }
 
     private void initView() {
@@ -81,15 +88,36 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         "\t\t});\n" +
                         "\t});");
                 super.onPageFinished(view, url);
+                String title = view.getTitle();
+                if (!TextUtils.isEmpty(title)) {
+                    toolbarTitle.setText(title);
+                }
+                checkBackStack();
             }
         });
+    }
+
+    /**
+     * 检查任务栈时候有返回和更多
+     */
+    private void checkBackStack() {
+        if (webView.canGoBack()) {
+            imgBack.setImageResource(R.drawable.img_back_ture);
+        } else {
+            imgBack.setImageResource(R.drawable.img_back_false);
+        }
+        if (webView.canGoForward()) {
+            imgNext.setImageResource(R.drawable.img_next_ture);
+        } else {
+            imgNext.setImageResource(R.drawable.img_next_false);
+        }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.toolbar_exit:
-
+                showDialog();
                 break;
             case R.id.img_back:
                 webView.goBack();
@@ -102,6 +130,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 break;
         }
+    }
+
+    /**
+     * 弹出dialog提示用户
+     */
+    private void showDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("确认退出你我贷，您的信息将不会被保存！")
+                .setPositiveButton("退出", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("再看看", null)
+                .show();
     }
 
     // 用来计算返回键的点击间隔时间
