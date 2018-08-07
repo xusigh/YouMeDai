@@ -12,7 +12,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
-        Bmob.initialize(this, "f6d7abbe9b6b863ab3e769a3a23b3024");
+        Bmob.initialize(this, "*********************");
     }
 
     public static Context getAppContext() {
